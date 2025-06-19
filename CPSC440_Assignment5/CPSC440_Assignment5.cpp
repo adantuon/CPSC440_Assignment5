@@ -11,8 +11,8 @@
 #include "mappy_A5.h"
 
 int main() {
-	const int WIDTH = 900;
-	const int HEIGHT = 900;
+	const int WIDTH = 512;
+	const int HEIGHT = 512;
 	bool keys[] = { false, false, false, false };
 	bool exited = false;
 	enum KEYS { UP, DOWN, LEFT, RIGHT };
@@ -23,7 +23,7 @@ int main() {
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
-	ALLEGRO_TIMER *timer;
+	ALLEGRO_TIMER *timer = NULL;
 
 	//program init
 	if (!al_init()) {
@@ -51,12 +51,12 @@ int main() {
 	int xOff = 0;
 	int yOff = 0;
 
-	/*
-	char mapName[12] = "_________________";
+	
+	char mapName[16] = "Level0.FMP";
 	if (MapLoad(mapName, 1)) {
 		return -5;
 	}
-	*/
+	
 
 	eventQueue = al_create_event_queue();
 	timer = al_create_timer(1.0 / 60);
@@ -66,13 +66,12 @@ int main() {
 	al_register_event_source(eventQueue, al_get_display_event_source(display));
 
 	al_start_timer(timer);
-	int mazeTimer = 3600;
 
 	//draw the background tiles
-	//MapDrawBG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1);
+	MapDrawBG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1);
 
 	//draw foreground tiles
-	//MapDrawFG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1, 0);
+	MapDrawFG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1, 0);
 	//player.DrawSprites(0, 0);
 
 	al_flip_display();
@@ -140,4 +139,10 @@ int main() {
 	al_destroy_display(display);
 
 	return 0;
+}
+
+int collided(int x, int y) {
+	BLKSTR *blockdata;
+	blockdata = MapGetBlock(x / mapblockwidth, y / mapblockheight);
+	return blockdata->tl;
 }
