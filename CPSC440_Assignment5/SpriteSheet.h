@@ -3,8 +3,10 @@
 #pragma once
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include "mappy_A5.h"
 
 int collided(int x, int y);
+int specialValue(int x, int y);
 
 class Sprite {
 	public:
@@ -12,6 +14,7 @@ class Sprite {
 		~Sprite();
 		void InitSprites();
 		bool UpdateSprites(int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT
+		int CollisionSpecial();
 		void DrawSprites(int xoffset, int yoffset);
 		float getX() { return x; }
 		void setX(int inX) { x = inX; }

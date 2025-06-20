@@ -16,6 +16,7 @@ int main() {
 	const int HEIGHT = 512;
 	bool keys[] = { false, false, false, false };
 	bool exited = false;
+	int special = 0;
 	enum KEYS { UP, DOWN, LEFT, RIGHT };
 
 	bool exit = false;
@@ -100,6 +101,8 @@ int main() {
 			else {
 				exited = player.UpdateSprites(-1, mapwidth * 32, mapheight * 32);
 			}
+
+			special = player.CollisionSpecial();
 		}
 
 		else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -109,7 +112,8 @@ int main() {
 		else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
 			switch (event.keyboard.keycode) {
 			case ALLEGRO_KEY_ESCAPE:
-				exit = true;
+				MapChangeLayer(1);
+				//exit = true;
 				break;
 			case ALLEGRO_KEY_UP:
 				keys[UP] = true;
@@ -128,7 +132,7 @@ int main() {
 		else if (event.type == ALLEGRO_EVENT_KEY_UP) {
 			switch (event.keyboard.keycode) {
 			case ALLEGRO_KEY_ESCAPE:
-				exit = true;
+				//exit = true;
 				break;
 			case ALLEGRO_KEY_UP:
 				keys[UP] = false;
@@ -142,6 +146,12 @@ int main() {
 			case ALLEGRO_KEY_RIGHT:
 				keys[RIGHT] = false;
 				break;
+			}
+		}
+
+		if (special != 0) {
+			if (special == 1) {
+				MapChangeLayer(1);
 			}
 		}
 
@@ -181,4 +191,13 @@ int collided(int x, int y) {
 	BLKSTR *blockdata;
 	blockdata = MapGetBlock(x / mapblockwidth, y / mapblockheight);
 	return blockdata->tl;
+}
+
+int specialValue(int x, int y)
+{
+
+	BLKSTR *data;
+	data = MapGetBlock(x / mapblockwidth, y / mapblockheight);
+
+	return data->user1;
 }

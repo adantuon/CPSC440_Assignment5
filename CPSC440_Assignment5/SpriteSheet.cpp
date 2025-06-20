@@ -113,23 +113,28 @@ bool Sprite::UpdateSprites(int dir, int width, int height) {
 
 	//Map Edge Collision
 	//Top edge has no exits
-	if (y <= 0) {
+	if (y <= 0 || x <= 0 || y >= height - frameHeight) {
 		x = oldx;
 		y = oldy;
 	}
 	//potential exit edges
-	else if (x <= 0 || x >= width - frameWidth || y >= height - frameHeight) {
+	else if (x >= width - frameWidth) {
 		x = oldx;
 		y = oldy;
 	}
 
 	//Collision Detection
-	if (collided(x, y) || collided(x + frameWidth, y + frameHeight) || collided(x + frameWidth, y) || collided (x, y + frameHeight)) {
+	if (collided(x + 6, y) || collided(x + frameWidth - 6, y + frameHeight) || collided(x + frameWidth - 6, y) || collided (x + 6, y + frameHeight)) {
 		x = oldx;
 		y = oldy;
 	}
 
 	return exited;
+}
+
+int Sprite::CollisionSpecial()
+{
+	return specialValue(x + 16, y + 16);
 }
 
 void Sprite::DrawSprites(int xoffset, int yoffset) {
