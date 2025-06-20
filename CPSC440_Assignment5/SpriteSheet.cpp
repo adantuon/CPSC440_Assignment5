@@ -39,7 +39,7 @@ void Sprite::InitSprites(char file[16], int x, int y, bool player) {
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
 }
 
-void Sprite::UpdateSprites(int dir, int width, int height) {
+void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, int height) {
 
 	int oldx = x;
 	int oldy = y;
@@ -168,6 +168,13 @@ void Sprite::UpdateSprites(int dir, int width, int height) {
 		y = oldy;
 	}
 
+	//enemy collision
+	for (int i = 0; i < numEnemies; i++) {
+		if (x + frameWidth >= enemies[i].getX() && x <= enemies[i].getX() + frameWidth && y + frameHeight >= enemies[i].getY() && y <= enemies[i].getY() + frameHeight) {
+			x = oldx;
+			y = oldy;
+		}
+	}
 }
 
 void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
@@ -256,6 +263,12 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 		else {
 			directionAI = 0;
 		}
+	}
+
+	//player collision
+	if (x + frameWidth >= player.getX() && x <= player.getX() + frameWidth && y + frameHeight >= player.getY() && y <= player.getY() + frameHeight) {
+		x = oldx;
+		y = oldy;
 	}
 
 }

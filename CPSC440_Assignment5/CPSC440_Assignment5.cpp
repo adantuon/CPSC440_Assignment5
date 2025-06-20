@@ -103,22 +103,22 @@ int main() {
 		if (event.type == ALLEGRO_EVENT_TIMER) {
 			render = true;
 			if (keys[SPACE]) {
-				player.UpdateSprites(SPACE, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(enemies, spawnedEnemies, SPACE, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[UP]) {
-				player.UpdateSprites(UP, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(enemies, spawnedEnemies, UP, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[DOWN]) {
-				player.UpdateSprites(DOWN, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(enemies, spawnedEnemies, DOWN, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[LEFT]) {
-				player.UpdateSprites(LEFT, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(enemies, spawnedEnemies, LEFT, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[RIGHT]) {
-				player.UpdateSprites(RIGHT, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(enemies, spawnedEnemies, RIGHT, mapwidth * 32, mapheight * 32);
 			}
 			else {
-				player.UpdateSprites(-1, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(enemies, spawnedEnemies, -1, mapwidth * 32, mapheight * 32);
 			}
 
 			special = player.CollisionSpecial();
@@ -181,6 +181,41 @@ int main() {
 		if (special != 0) {
 			if (special == 1) {
 				MapChangeLayer(1);
+			}
+			else if (special == 2) {
+				//change map
+				MapChangeLayer(2);
+
+				//move player
+				player.setX(0);
+
+				//respawn enemies
+				for (int i = 0; i < spawnedEnemies; i++) {
+					enemies[i].setLives(1);
+				}
+
+				spawnedEnemies = 10;
+
+				enemies[0].setX(800);
+				enemies[0].setY(32);
+				enemies[1].setX(832);
+				enemies[1].setY(64);
+				enemies[2].setX(864);
+				enemies[2].setY(96);
+				enemies[3].setX(896);
+				enemies[3].setY(128);
+				enemies[4].setX(1280);
+				enemies[4].setY(128);
+				enemies[5].setX(1248);
+				enemies[5].setY(128);
+				enemies[6].setX(1216);
+				enemies[6].setY(128);
+				enemies[7].setX(1184);
+				enemies[7].setY(128);
+				enemies[8].setX(1120);
+				enemies[8].setY(128);
+				enemies[9].setX(1056);
+				enemies[9].setY(128);
 			}
 		}
 

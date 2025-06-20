@@ -13,7 +13,7 @@ class Sprite {
 		Sprite();
 		~Sprite();
 		void InitSprites(char file[16], int x, int y, bool player);
-		void UpdateSprites(int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT, 4 = firing
+		void UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT, 4 = firing
 		void UpdateSpritesAI(Sprite &player, int width, int height);
 		int CollisionSpecial();
 		void DrawSprites(int xoffset, int yoffset);
