@@ -138,12 +138,14 @@
   <ItemGroup>
     <ClCompile Include="CPSC440_Assignment5.cpp" />
     <ClCompile Include="mappy_A5.c" />
+    <ClCompile Include="SpriteSheet.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mappy_A5.h" />
+    <ClInclude Include="SpriteSheet.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

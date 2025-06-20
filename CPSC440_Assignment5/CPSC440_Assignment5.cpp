@@ -8,6 +8,7 @@
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
 #include <stdio.h>
+#include "SpriteSheet.h"
 #include "mappy_A5.h"
 
 int main() {
@@ -19,7 +20,7 @@ int main() {
 
 	bool exit = false;
 	bool render = false;
-	//Sprite player;
+	Sprite player;
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
@@ -46,7 +47,7 @@ int main() {
 	ALLEGRO_FONT *font = al_load_font("PressStart2P.ttf", 48, 0);
 	ALLEGRO_FONT *smallFont = al_load_font("PressStart2P.ttf", 16, 0);
 
-	//player.InitSprites();
+	player.InitSprites();
 
 	int xOff = 0;
 	int yOff = 0;
@@ -72,7 +73,7 @@ int main() {
 
 	//draw foreground tiles
 	MapDrawFG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1, 0);
-	//player.DrawSprites(0, 0);
+	player.DrawSprites(0, 0);
 
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -84,6 +85,21 @@ int main() {
 
 		if (event.type == ALLEGRO_EVENT_TIMER) {
 			render = true;
+			if (keys[UP]) {
+				exited = player.UpdateSprites(UP, mapwidth * 32, mapheight * 32);
+			}
+			else if (keys[DOWN]) {
+				exited = player.UpdateSprites(DOWN, mapwidth * 32, mapheight * 32);
+			}
+			else if (keys[LEFT]) {
+				exited = player.UpdateSprites(LEFT, mapwidth * 32, mapheight * 32);
+			}
+			else if (keys[RIGHT]) {
+				exited = player.UpdateSprites(RIGHT, mapwidth * 32, mapheight * 32);
+			}
+			else {
+				exited = player.UpdateSprites(-1, mapwidth * 32, mapheight * 32);
+			}
 		}
 
 		else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -131,6 +147,26 @@ int main() {
 
 		if (render && al_is_event_queue_empty(eventQueue)) {
 			render = false;
+
+			xOff = player.getX() + player.getWidth() - WIDTH / 2;
+			yOff = player.getY() + player.getHeight() - HEIGHT / 2;
+
+			//avoid moving beyond the map edge
+			if (xOff < 0) xOff = 0;
+
+			if (xOff > (mapwidth * mapblockwidth - WIDTH))
+				xOff = mapwidth * mapblockwidth - WIDTH;
+			if (yOff < 0)
+				yOff = 0;
+			if (yOff > (mapheight * mapblockheight - HEIGHT))
+				yOff = mapheight * mapblockheight - HEIGHT;
+
+			MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
+			MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
+			player.DrawSprites(xOff, yOff);
+
+			al_flip_display();
+			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
 	}
 
