@@ -11,15 +11,13 @@ Sprite::~Sprite() {
 	al_destroy_bitmap(image);
 }
 
-void Sprite::InitSprites(char file[16], int x, int y) {
+void Sprite::InitSprites(char file[16], int x, int y, bool player) {
 	//If player
-	if (x == 32 && y == 240) {
-		direction = 1;
+	if (player) {
 		lives = 3;
 	}
 	//If enemy
 	else {
-		direction = 0;
 		lives = 1;
 	}
 
@@ -32,6 +30,7 @@ void Sprite::InitSprites(char file[16], int x, int y) {
 	frameWidth = 32;
 	frameHeight = 32;
 	animationColumns = 10;
+	direction = 1;
 	speed = 2;
 	firing = false;
 	directionAI = rand() % 2;
@@ -171,10 +170,17 @@ void Sprite::UpdateSprites(int dir, int width, int height) {
 
 }
 
-void Sprite::UpdateSpritesAI(int width, int height) {
+void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 
 	int oldx = x;
 	int oldy = y;
+
+	if (player.getX() < x) {
+		direction = 0;
+	}
+	else if (player.getX() > x + frameWidth) {
+		direction = 1;
+	}
 
 
 	//Dead

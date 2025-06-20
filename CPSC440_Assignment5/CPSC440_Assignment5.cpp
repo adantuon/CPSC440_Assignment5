@@ -49,18 +49,18 @@ int main() {
 	ALLEGRO_FONT *font = al_load_font("PressStart2P.ttf", 48, 0);
 	ALLEGRO_FONT *smallFont = al_load_font("PressStart2P.ttf", 16, 0);
 
-	player.InitSprites((char *)"Player.png", 32, 240);
+	player.InitSprites((char *)"Player.png", 32, 240, true);
 	
-	enemies[0].InitSprites((char *)"Enemy.png", 352, 240);
-	enemies[1].InitSprites((char *)"Enemy.png", 608, 240);
-	enemies[2].InitSprites((char *)"Enemy.png", 832, 240);
-	enemies[3].InitSprites((char *)"Enemy.png", 992, 240);
-	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240);
-	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240);
-	enemies[6].InitSprites((char *)"Enemy.png", 0, 0);
-	enemies[7].InitSprites((char *)"Enemy.png", 0, 0);
-	enemies[8].InitSprites((char *)"Enemy.png", 0, 0);
-	enemies[9].InitSprites((char *)"Enemy.png", 0, 0);
+	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false);
+	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false);
+	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false);
+	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false);
+	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false);
+	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false);
+	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false);
+	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false);
+	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false);
+	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false);
 
 
 	int xOff = 0;
@@ -124,7 +124,7 @@ int main() {
 			special = player.CollisionSpecial();
 
 			for (int i = 0; i < spawnedEnemies; i++) {
-				enemies[i].UpdateSpritesAI(mapwidth * 32, mapheight * 32);
+				enemies[i].UpdateSpritesAI(player, mapwidth * 32, mapheight * 32);
 			}
 		}
 
