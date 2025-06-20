@@ -3,6 +3,7 @@
 #pragma once
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include "Projectile.h"
 #include "mappy_A5.h"
 
 int collided(int x, int y);
@@ -12,7 +13,7 @@ class Sprite {
 	public:
 		Sprite();
 		~Sprite();
-		void InitSprites(char file[16], int x, int y, bool player);
+		void InitSprites(char file[16], int x, int y, bool player, Projectile *projectiles, int numProjectiles);
 		void UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT, 4 = firing
 		void UpdateSpritesAI(Sprite &player, int width, int height);
 		int CollisionSpecial();
@@ -41,6 +42,8 @@ class Sprite {
 		bool firing;
 		int lives;
 		int directionAI;
+		Projectile *projectiles;
+		int numProjectiles;
 
 		ALLEGRO_BITMAP *image;
 };

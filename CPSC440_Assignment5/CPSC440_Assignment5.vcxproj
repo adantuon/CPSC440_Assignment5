@@ -138,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="CPSC440_Assignment5.cpp" />
     <ClCompile Include="mappy_A5.c" />
+    <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mappy_A5.h" />
+    <ClInclude Include="Projectile.h" />
     <ClInclude Include="SpriteSheet.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

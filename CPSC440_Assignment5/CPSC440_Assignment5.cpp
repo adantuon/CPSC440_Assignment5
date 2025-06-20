@@ -9,6 +9,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <stdio.h>
 #include "SpriteSheet.h"
+#include "Projectile.h"
 #include "mappy_A5.h"
 
 int main() {
@@ -18,11 +19,12 @@ int main() {
 	int special = 0;
 	int spawnedEnemies = 6;
 	enum KEYS { UP, DOWN, LEFT, RIGHT, SPACE };
-
 	bool exit = false;
 	bool render = false;
 	Sprite player;
 	Sprite enemies[10];
+	const int numPlayerProjectiles = 10;
+	const int numEnemyProjectiles = 40;
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
@@ -49,18 +51,29 @@ int main() {
 	ALLEGRO_FONT *font = al_load_font("PressStart2P.ttf", 48, 0);
 	ALLEGRO_FONT *smallFont = al_load_font("PressStart2P.ttf", 16, 0);
 
-	player.InitSprites((char *)"Player.png", 32, 240, true);
+	Projectile playerProjectiles[numPlayerProjectiles];
+	Projectile enemyProjectiles[numEnemyProjectiles];
+
+	player.InitSprites((char *)"Player.png", 32, 240, true, playerProjectiles, numPlayerProjectiles);
 	
-	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false);
-	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false);
-	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false);
-	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false);
-	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false);
-	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false);
-	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false);
-	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false);
-	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false);
-	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false);
+	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
+
+
+	for (int i = 0; i < 10; i++) {
+		playerProjectiles[i].initProjectile(false);
+	}
+	for (int i = 0; i < 40; i++) {
+		enemyProjectiles[i].initProjectile(true);
+	}
 
 
 	int xOff = 0;
@@ -82,6 +95,7 @@ int main() {
 
 	al_start_timer(timer);
 
+	al_set_target_bitmap(al_get_backbuffer(display));
 	//draw the background tiles
 	MapDrawBG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1);
 
@@ -102,6 +116,15 @@ int main() {
 
 		if (event.type == ALLEGRO_EVENT_TIMER) {
 			render = true;
+
+			for (int i = 0; i < numPlayerProjectiles; i++) {
+				playerProjectiles[i].UpdateProjectile(mapwidth * 32, mapheight * 32);
+			}
+
+			for (int i = 0; i < numEnemyProjectiles; i++) {
+				enemyProjectiles[i].UpdateProjectile(mapwidth * 32, mapheight * 32);
+			}
+
 			if (keys[SPACE]) {
 				player.UpdateSprites(enemies, spawnedEnemies, SPACE, mapwidth * 32, mapheight * 32);
 			}
@@ -236,9 +259,19 @@ int main() {
 
 			MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
 			MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
+
 			player.DrawSprites(xOff, yOff);
+
 			for (int i = 0; i < spawnedEnemies; i++) {
 				enemies[i].DrawSprites(xOff, yOff);
+			}
+
+			for (int i = 0; i < numPlayerProjectiles; i++) {
+				playerProjectiles[i].DrawProjectile(xOff, yOff);
+			}
+
+			for (int i = 0; i < numEnemyProjectiles; i++) {
+				enemyProjectiles[i].DrawProjectile(xOff, yOff);
 			}
 
 			al_flip_display();

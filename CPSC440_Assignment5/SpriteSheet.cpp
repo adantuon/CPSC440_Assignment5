@@ -11,7 +11,7 @@ Sprite::~Sprite() {
 	al_destroy_bitmap(image);
 }
 
-void Sprite::InitSprites(char file[16], int x, int y, bool player) {
+void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectiles, int numProjectiles) {
 	//If player
 	if (player) {
 		lives = 3;
@@ -34,6 +34,8 @@ void Sprite::InitSprites(char file[16], int x, int y, bool player) {
 	speed = 2;
 	firing = false;
 	directionAI = rand() % 2;
+	Sprite::projectiles = projectiles;
+	Sprite::numProjectiles = numProjectiles;
 
 	image = al_load_bitmap(file);
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
@@ -66,6 +68,15 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 			firing = true;
 		}
 		
+		if (curFrame == 36 && frameCount == 0) {
+			for (int i = 0; i < numProjectiles; i++) {
+				if (!projectiles[i].getLive()) {
+					projectiles[i].FireProjectile(x, y, direction);
+					break;
+				}
+			}
+		}
+
 		if (++frameCount > frameDelay) {
 			frameCount = 0;
 			if (++curFrame > 39) {
@@ -209,6 +220,15 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 			curFrame = 30;
 			frameCount = 0;
 			firing = true;
+		}
+
+		if (curFrame == 38 && frameCount == 0) {
+			for (int i = 0; i < numProjectiles; i++) {
+				if (!projectiles[i].getLive()) {
+					projectiles[i].FireProjectile(x, y, direction);
+					break;
+				}
+			}
 		}
 
 		if (++frameCount > frameDelay) {
