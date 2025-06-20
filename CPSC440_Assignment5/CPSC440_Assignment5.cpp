@@ -27,6 +27,9 @@ int main() {
 	enum KEYS { UP, DOWN, LEFT, RIGHT, SPACE };
 	bool exit = false;
 	bool render = false;
+	unsigned int frames = 0;
+	int end = 0;
+	unsigned int endframe = 0;
 	Sprite player;
 	Sprite enemies[10];
 	const int numPlayerProjectiles = 10;
@@ -116,17 +119,14 @@ int main() {
 
 	al_start_timer(timer);
 
-	//Drawing
+	//INTRO
 	al_set_target_bitmap(al_get_backbuffer(display));
-	//draw the background tiles
-	MapDrawBG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1);
-
-	//draw foreground tiles
-	MapDrawFG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1, 0);
-	player.DrawSprites(0, 0);
-	for (int i = 0; i < 10; i++) {
-		enemies[i].DrawSprites(0, 0);
-	}
+	al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 200, ALLEGRO_ALIGN_CENTER, "Greetings Adventurer!");
+	al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 150, ALLEGRO_ALIGN_CENTER, "A foul curse has befallen the land");
+	al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 100, ALLEGRO_ALIGN_CENTER, "You must destroy the crystal");
+	al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 50, ALLEGRO_ALIGN_CENTER, "within the castle to end the curse");
+	al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 + 50, ALLEGRO_ALIGN_CENTER, "use arrow keys to move");
+	al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 + 100, ALLEGRO_ALIGN_CENTER, "use space to cast a spell");
 
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -137,7 +137,7 @@ int main() {
 		ALLEGRO_EVENT event;
 		al_wait_for_event(eventQueue, &event);
 
-		if (event.type == ALLEGRO_EVENT_TIMER) {
+		if (event.type == ALLEGRO_EVENT_TIMER && frames > 300) {
 			render = true;
 
 			for (int i = 0; i < numPlayerProjectiles; i++) {
@@ -171,6 +171,11 @@ int main() {
 
 			for (int i = 0; i < spawnedEnemies; i++) {
 				enemies[i].UpdateSpritesAI(player, mapwidth * 32, mapheight * 32);
+			}
+
+			if (player.getLives() == 0 && endframe == 0) {
+				endframe = frames;
+				end = 1;
 			}
 		}
 
@@ -269,42 +274,55 @@ int main() {
 		if (render && al_is_event_queue_empty(eventQueue)) {
 			render = false;
 
-			xOff = player.getX() + player.getWidth() - WIDTH / 2;
-			yOff = player.getY() + player.getHeight() - HEIGHT / 2;
+			if (end == 1 && frames - endframe > 120) {
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 150, ALLEGRO_ALIGN_CENTER, "Game Over");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 100, ALLEGRO_ALIGN_CENTER, "You have died and");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 50, ALLEGRO_ALIGN_CENTER, "evil has triumphed");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, "Perhaps another will manage");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 + 50, ALLEGRO_ALIGN_CENTER, "to lift the curse");
+			}
+			else {
+				xOff = player.getX() + player.getWidth() - WIDTH / 2;
+				yOff = player.getY() + player.getHeight() - HEIGHT / 2;
 
-			//avoid moving beyond the map edge
-			if (xOff < 0) xOff = 0;
+				//avoid moving beyond the map edge
+				if (xOff < 0) xOff = 0;
 
-			if (xOff > (mapwidth * mapblockwidth - WIDTH))
-				xOff = mapwidth * mapblockwidth - WIDTH;
-			if (yOff < 0)
-				yOff = 0;
-			if (yOff > (mapheight * mapblockheight - HEIGHT))
-				yOff = mapheight * mapblockheight - HEIGHT;
+				if (xOff > (mapwidth * mapblockwidth - WIDTH))
+					xOff = mapwidth * mapblockwidth - WIDTH;
+				if (yOff < 0)
+					yOff = 0;
+				if (yOff > (mapheight * mapblockheight - HEIGHT))
+					yOff = mapheight * mapblockheight - HEIGHT;
 
-			MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
-			MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
+				MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
+				MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
 
-			for (int i = 0; i < spawnedEnemies; i++) {
-				enemies[i].DrawSprites(xOff, yOff);
+				for (int i = 0; i < spawnedEnemies; i++) {
+					enemies[i].DrawSprites(xOff, yOff);
+				}
+
+				player.DrawSprites(xOff, yOff);
+
+				for (int i = 0; i < numPlayerProjectiles; i++) {
+					playerProjectiles[i].DrawProjectile(xOff, yOff);
+				}
+
+				for (int i = 0; i < numEnemyProjectiles; i++) {
+					enemyProjectiles[i].DrawProjectile(xOff, yOff);
+				}
+
+				al_draw_textf(font, al_map_rgb(255, 255, 255), 8, 4, ALLEGRO_ALIGN_LEFT, "Health: ");
+				drawStatus(player.getLives(), heart);
 			}
 
-			player.DrawSprites(xOff, yOff);
-
-			for (int i = 0; i < numPlayerProjectiles; i++) {
-				playerProjectiles[i].DrawProjectile(xOff, yOff);
-			}
-
-			for (int i = 0; i < numEnemyProjectiles; i++) {
-				enemyProjectiles[i].DrawProjectile(xOff, yOff);
-			}
-
-			al_draw_textf(font, al_map_rgb(255, 255, 255), 8, 4, ALLEGRO_ALIGN_LEFT, "Health: ");
-			drawStatus(player.getLives(), heart);
+			
 
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
+
+		frames++;
 	}
 
 	MapFreeMem();
