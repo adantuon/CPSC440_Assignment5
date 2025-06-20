@@ -135,8 +135,7 @@ int main() {
 		else if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
 			switch (event.keyboard.keycode) {
 			case ALLEGRO_KEY_ESCAPE:
-				MapChangeLayer(1);
-				//exit = true;
+				exit = true;
 				break;
 			case ALLEGRO_KEY_UP:
 				keys[UP] = true;
@@ -158,7 +157,7 @@ int main() {
 		else if (event.type == ALLEGRO_EVENT_KEY_UP) {
 			switch (event.keyboard.keycode) {
 			case ALLEGRO_KEY_ESCAPE:
-				//exit = true;
+				exit = true;
 				break;
 			case ALLEGRO_KEY_UP:
 				keys[UP] = false;
