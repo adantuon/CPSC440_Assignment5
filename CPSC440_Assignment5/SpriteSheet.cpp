@@ -197,12 +197,14 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 	}
 
 	//Projectile collision
-	for (int i = 0; i < numProjectilesE; i++) {
-		if (projectilesE[i].getLive()) {
-			if (x + frameWidth >= projectilesE[i].getX() && x <= projectilesE[i].getX() + 8 && y + frameHeight >= projectilesE[i].getY() && y <= projectilesE[i].getY() + 8) {
-				al_play_sample(sample, 0.66, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				projectilesE[i].setLive(false);
-				lives--;
+	if (lives > 0) {
+		for (int i = 0; i < numProjectilesE; i++) {
+			if (projectilesE[i].getLive()) {
+				if (x + frameWidth >= projectilesE[i].getX() && x <= projectilesE[i].getX() + 8 && y + frameHeight >= projectilesE[i].getY() && y <= projectilesE[i].getY() + 8) {
+					al_play_sample(sample, 0.66, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					projectilesE[i].setLive(false);
+					lives--;
+				}
 			}
 		}
 	}
@@ -315,16 +317,17 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 	
 
 	//Projectile Collision
-	for (int i = 0; i < numProjectilesP; i++) {
-		if (projectilesP[i].getLive()) {
-			if (x + frameWidth >= projectilesP[i].getX() && x <= projectilesP[i].getX() + 8 && y + frameHeight >= projectilesP[i].getY() && y <= projectilesP[i].getY() + 8) {
-				al_play_sample(sample, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
-				projectilesP[i].setLive(false);
-				lives--;
+	if (lives > 0) {
+		for (int i = 0; i < numProjectilesP; i++) {
+			if (projectilesP[i].getLive()) {
+				if (x + frameWidth >= projectilesP[i].getX() && x <= projectilesP[i].getX() + 8 && y + frameHeight >= projectilesP[i].getY() && y <= projectilesP[i].getY() + 8) {
+					al_play_sample(sample, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+					projectilesP[i].setLive(false);
+					lives--;
+				}
 			}
 		}
 	}
-
 }
 
 int Sprite::CollisionSpecial()
