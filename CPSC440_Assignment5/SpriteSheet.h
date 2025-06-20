@@ -14,6 +14,7 @@ class Sprite {
 		~Sprite();
 		void InitSprites(char file[16], int x, int y);
 		void UpdateSprites(int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT, 4 = firing
+		void UpdateSpritesAI(int width, int height);
 		int CollisionSpecial();
 		void DrawSprites(int xoffset, int yoffset);
 		float getX() { return x; }
@@ -39,6 +40,7 @@ class Sprite {
 		int speed;
 		bool firing;
 		int lives;
+		int directionAI;
 
 		ALLEGRO_BITMAP *image;
 };

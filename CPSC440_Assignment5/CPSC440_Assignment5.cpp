@@ -124,7 +124,7 @@ int main() {
 			special = player.CollisionSpecial();
 
 			for (int i = 0; i < spawnedEnemies; i++) {
-				enemies[i].UpdateSprites(-1, mapwidth * 32, mapheight * 32);
+				enemies[i].UpdateSpritesAI(mapwidth * 32, mapheight * 32);
 			}
 		}
 

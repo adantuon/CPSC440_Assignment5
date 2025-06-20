@@ -34,6 +34,7 @@ void Sprite::InitSprites(char file[16], int x, int y) {
 	animationColumns = 10;
 	speed = 2;
 	firing = false;
+	directionAI = rand() % 2;
 
 	image = al_load_bitmap(file);
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
@@ -166,6 +167,89 @@ void Sprite::UpdateSprites(int dir, int width, int height) {
 	if (collided(x + 6, y) || collided(x + frameWidth - 6, y + frameHeight) || collided(x + frameWidth - 6, y) || collided (x + 6, y + frameHeight)) {
 		x = oldx;
 		y = oldy;
+	}
+
+}
+
+void Sprite::UpdateSpritesAI(int width, int height) {
+
+	int oldx = x;
+	int oldy = y;
+
+
+	//Dead
+	if (lives < 1) {
+		if (curFrame < 40) {
+			curFrame = 40;
+		}
+
+		if (++frameCount > frameDelay) {
+			frameCount = 0;
+			if (curFrame < maxFrame) {
+				curFrame++;
+			}
+		}
+	}
+	//Firing Projectile
+	else if (rand() % 50 == 0 || firing) {
+		if (!firing) {
+			curFrame = 30;
+			frameCount = 0;
+			firing = true;
+		}
+
+		if (++frameCount > frameDelay) {
+			frameCount = 0;
+			if (++curFrame > 39) {
+				curFrame = 0;
+				firing = false;
+			}
+		}
+	}
+	//Movement Up/Down
+	else {
+		if (curFrame < 20) {
+			curFrame = 20;
+		}
+
+		if (++frameCount > frameDelay)
+		{
+			frameCount = 0;
+			if (++curFrame > 29)
+				curFrame = 20;
+		}
+		if (directionAI == 0) {
+			y += speed;
+		}
+		else {
+			y -= speed;
+		}
+		
+	}
+
+	//Map Edge Collision
+	if (y <= 0 || x <= 0 || y >= height - frameHeight || x >= width - frameWidth) {
+		x = oldx;
+		y = oldy;
+		if (directionAI == 0) {
+			directionAI = 1;
+		}
+		else {
+			directionAI = 0;
+		}
+
+	}
+
+	//Collision Detection
+	if (collided(x + 6, y) || collided(x + frameWidth - 6, y + frameHeight) || collided(x + frameWidth - 6, y) || collided(x + 6, y + frameHeight)) {
+		x = oldx;
+		y = oldy;
+		if (directionAI == 0) {
+			directionAI = 1;
+		}
+		else {
+			directionAI = 0;
+		}
 	}
 
 }
