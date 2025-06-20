@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "SpriteSheet.h"
 #include "Projectile.h"
+#include "Crystal.h"
 #include "mappy_A5.h"
 
 int collided(int x, int y);
@@ -22,18 +23,21 @@ int main() {
 	const int WIDTH = 512;
 	const int HEIGHT = 512;
 	bool keys[] = { false, false, false, false, false };
-	int special = 0;
-	int spawnedEnemies = 6;
 	enum KEYS { UP, DOWN, LEFT, RIGHT, SPACE };
+
 	bool exit = false;
 	bool render = false;
 	unsigned int frames = 0;
 	int end = 0;
 	unsigned int endframe = 0;
+
 	Sprite player;
 	Sprite enemies[10];
+	Crystal crystal;
+	bool crystalSpawned = false;
 	const int numPlayerProjectiles = 10;
-	const int numEnemyProjectiles = 40;
+	const int numEnemyProjectiles = 40;	
+	
 	ALLEGRO_SAMPLE *background = NULL;
 	ALLEGRO_SAMPLE *door = NULL;
 	ALLEGRO_SAMPLE_ID *doorOpens = NULL;
@@ -73,18 +77,20 @@ int main() {
 	Projectile enemyProjectiles[numEnemyProjectiles];
 
 	//Player and Sprite Init
-	player.InitSprites((char *)"Player.png", 32, 240, true, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	int spawnedEnemies = 6;
+
+	player.InitSprites((char *)"Player.png", 32, 240, true, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
 	
-	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
-	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
+	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles, &crystal);
 
 	//Projectile init
 	for (int i = 0; i < 10; i++) {
@@ -93,7 +99,6 @@ int main() {
 	for (int i = 0; i < 40; i++) {
 		enemyProjectiles[i].initProjectile(true);
 	}
-
 
 	//Map Creation
 	int xOff = 0;
@@ -105,7 +110,7 @@ int main() {
 	}
 
 	//Sounds
-	al_reserve_samples(10);						//This needs to be higher than num imported sounds since same sound can sometimes play at same time
+	al_reserve_samples(16);						//This needs to be higher than num imported sounds since same sound can sometimes play at same time
 	background = al_load_sample("background.wav");
 	door = al_load_sample("door.wav");
 	
@@ -132,6 +137,9 @@ int main() {
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
 	al_play_sample(background, 0.15, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
+
+	int special = 0;
+	srand(time(NULL));
 	while (!exit) {
 
 		ALLEGRO_EVENT event;
@@ -171,6 +179,19 @@ int main() {
 
 			for (int i = 0; i < spawnedEnemies; i++) {
 				enemies[i].UpdateSpritesAI(player, mapwidth * 32, mapheight * 32);
+			}
+
+			if (crystalSpawned && endframe == 0) {
+				crystal.UpdateCrystal();
+				if (crystal.getLives() <= 0) {
+					endframe = frames;
+					end = 2;
+
+					//Kill all surviving enemies
+					for (int i = 0; i < spawnedEnemies; i++) {
+						enemies[i].setLives(0);
+					}
+				}
 			}
 
 			if (player.getLives() == 0 && endframe == 0) {
@@ -268,6 +289,10 @@ int main() {
 				enemies[8].setY(128);
 				enemies[9].setX(1056);
 				enemies[9].setY(128);
+
+				//Spawn Crystal
+				crystal.InitCrystal((char *)"crystal.png", 1376, 192, playerProjectiles, numPlayerProjectiles);
+				crystalSpawned = true;
 			}
 		}
 
@@ -280,6 +305,22 @@ int main() {
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 50, ALLEGRO_ALIGN_CENTER, "evil has triumphed");
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, "Perhaps another will manage");
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 + 50, ALLEGRO_ALIGN_CENTER, "to lift the curse");
+
+				if (frames - endframe > 600) {
+					exit = true;
+				}
+			}
+			else if (end == 2 && frames - endframe > 120) {
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 150, ALLEGRO_ALIGN_CENTER, "Game Over");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 100, ALLEGRO_ALIGN_CENTER, "You destroyed the crystal");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 50, ALLEGRO_ALIGN_CENTER, "The curse has been lifted");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTER, "and the land saved!");
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 + 100, ALLEGRO_ALIGN_CENTER, "Time: %i seconds", endframe / 60);
+				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 + 150, ALLEGRO_ALIGN_CENTER, "Health Remaining: %i", player.getLives());
+
+				if (frames - endframe > 600) {
+					exit = true;
+				}
 			}
 			else {
 				xOff = player.getX() + player.getWidth() - WIDTH / 2;
@@ -300,6 +341,10 @@ int main() {
 
 				for (int i = 0; i < spawnedEnemies; i++) {
 					enemies[i].DrawSprites(xOff, yOff);
+				}
+
+				if (crystalSpawned) {
+					crystal.DrawCrystal(xOff, yOff);
 				}
 
 				player.DrawSprites(xOff, yOff);

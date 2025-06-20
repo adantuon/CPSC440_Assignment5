@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CPSC440_Assignment5.cpp" />
+    <ClCompile Include="Crystal.cpp" />
     <ClCompile Include="mappy_A5.c" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
@@ -145,6 +146,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Crystal.h" />
     <ClInclude Include="mappy_A5.h" />
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="SpriteSheet.h" />

@@ -13,7 +13,7 @@ Sprite::~Sprite() {
 	al_destroy_bitmap(image);
 }
 
-void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectilesP, int numProjectilesP, Projectile *projectilesE, int numProjectilesE) {
+void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectilesP, int numProjectilesP, Projectile *projectilesE, int numProjectilesE, Crystal *crystal) {
 	//If player
 	if (player) {
 		sample = al_load_sample("playerhit.wav");
@@ -27,6 +27,7 @@ void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *p
 
 	Sprite::x = x;
 	Sprite::y = y;
+
 	maxFrame = 49;
 	curFrame = 0;
 	frameCount = 0;
@@ -38,13 +39,14 @@ void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *p
 	speed = 2;
 	firing = false;
 	directionAI = rand() % 2;
+
 	Sprite::projectilesP = projectilesP;
 	Sprite::numProjectilesP = numProjectilesP;
 	Sprite::projectilesE = projectilesE;
 	Sprite::numProjectilesE = numProjectilesE;
+	Sprite::crystal = crystal;
 
 	image = al_load_bitmap(file);
-	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
 }
 
 void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, int height) {
@@ -193,7 +195,14 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 				y = oldy;
 			}
 		}
-		
+	}
+
+	//Crystal collision
+	if (crystal->returnInPlay()) {
+		if (x + frameWidth >= crystal->getX() && x <= crystal->getX() + 64 && y + frameHeight >= crystal->getY() && y <= crystal->getY() + 128) {
+			x = oldx;
+			y = oldy;
+		}
 	}
 
 	//Projectile collision
