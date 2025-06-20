@@ -12,6 +12,12 @@
 #include "Projectile.h"
 #include "mappy_A5.h"
 
+int collided(int x, int y);
+
+int specialValue(int x, int y);
+
+void drawStatus(int lives, ALLEGRO_BITMAP *heart);
+
 int main() {
 	const int WIDTH = 512;
 	const int HEIGHT = 512;
@@ -48,12 +54,18 @@ int main() {
 	al_init_font_addon();
 	al_init_ttf_addon();
 
-	ALLEGRO_FONT *font = al_load_font("PressStart2P.ttf", 48, 0);
-	ALLEGRO_FONT *smallFont = al_load_font("PressStart2P.ttf", 16, 0);
 
+	//Font init
+	ALLEGRO_FONT *font = al_load_font("Early GameBoy.ttf", 16, 0);
+
+	//Heart init
+	ALLEGRO_BITMAP *heart = al_load_bitmap("heart.png");
+
+	//Projectile creation
 	Projectile playerProjectiles[numPlayerProjectiles];
 	Projectile enemyProjectiles[numEnemyProjectiles];
 
+	//Player and Sprite Init
 	player.InitSprites((char *)"Player.png", 32, 240, true, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
 	
 	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
@@ -67,7 +79,7 @@ int main() {
 	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
 	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
 
-
+	//Projectile init
 	for (int i = 0; i < 10; i++) {
 		playerProjectiles[i].initProjectile(false);
 	}
@@ -76,16 +88,16 @@ int main() {
 	}
 
 
+	//Map Creation
 	int xOff = 0;
 	int yOff = 0;
-
 	
 	char mapName[16] = "Level0.FMP";
 	if (MapLoad(mapName, 1)) {
 		return -5;
 	}
 	
-
+	//create eventQueue and Timer
 	eventQueue = al_create_event_queue();
 	timer = al_create_timer(1.0 / 60);
 
@@ -95,6 +107,7 @@ int main() {
 
 	al_start_timer(timer);
 
+	//Drawing
 	al_set_target_bitmap(al_get_backbuffer(display));
 	//draw the background tiles
 	MapDrawBG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1);
@@ -274,6 +287,9 @@ int main() {
 				enemyProjectiles[i].DrawProjectile(xOff, yOff);
 			}
 
+			al_draw_textf(font, al_map_rgb(255, 255, 255), 8, 4, ALLEGRO_ALIGN_LEFT, "Health: ");
+			drawStatus(player.getLives(), heart);
+
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
@@ -299,4 +315,11 @@ int specialValue(int x, int y)
 	data = MapGetBlock(x / mapblockwidth, y / mapblockheight);
 
 	return data->user1;
+}
+
+void drawStatus(int lives, ALLEGRO_BITMAP *heart) {
+
+	for (int i = 0; i < lives; i++) {
+		al_draw_scaled_bitmap(heart, 0, 0, 800, 800, 116 + i * 20, 7, 16, 16, 0);
+	}
 }
