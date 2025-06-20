@@ -11,10 +11,20 @@ Sprite::~Sprite() {
 	al_destroy_bitmap(image);
 }
 
-void Sprite::InitSprites() {
-	x = 32;
-	y = 360;
+void Sprite::InitSprites(char file[16], int x, int y) {
+	//If player
+	if (x == 32 && y == 240) {
+		direction = 1;
+		lives = 3;
+	}
+	//If enemy
+	else {
+		direction = 0;
+		lives = 1;
+	}
 
+	Sprite::x = x;
+	Sprite::y = y;
 	maxFrame = 49;
 	curFrame = 0;
 	frameCount = 0;
@@ -22,21 +32,50 @@ void Sprite::InitSprites() {
 	frameWidth = 32;
 	frameHeight = 32;
 	animationColumns = 10;
-	direction = 1;
 	speed = 2;
+	firing = false;
 
-	image = al_load_bitmap("SpriteSheet.png");
+	image = al_load_bitmap(file);
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
 }
 
-bool Sprite::UpdateSprites(int dir, int width, int height) {
-	
-	bool exited = false;
+void Sprite::UpdateSprites(int dir, int width, int height) {
+
 	int oldx = x;
 	int oldy = y;
 
+
+	//Dead
+	if (lives < 1) {
+		if (curFrame < 40) {
+			curFrame = 40;
+		}
+
+		if (++frameCount > frameDelay) {
+			frameCount = 0;
+			if (curFrame < maxFrame) {
+				curFrame++;
+			}
+		}
+	}
+	//Firing Projectile
+	else if (dir == 4 || firing) {
+		if (!firing) {
+			curFrame = 30;
+			frameCount = 0;
+			firing = true;
+		}
+		
+		if (++frameCount > frameDelay) {
+			frameCount = 0;
+			if (++curFrame > 39) {
+				curFrame = 0;
+				firing = false;
+			}	
+		}
+	}
 	//Movement Up
-	if (dir == 0) {
+	else if (dir == 0) {
 		if (curFrame < 20) {
 			curFrame = 20;
 		}
@@ -129,7 +168,6 @@ bool Sprite::UpdateSprites(int dir, int width, int height) {
 		y = oldy;
 	}
 
-	return exited;
 }
 
 int Sprite::CollisionSpecial()

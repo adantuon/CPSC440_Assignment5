@@ -14,14 +14,15 @@
 int main() {
 	const int WIDTH = 512;
 	const int HEIGHT = 512;
-	bool keys[] = { false, false, false, false };
-	bool exited = false;
+	bool keys[] = { false, false, false, false, false };
 	int special = 0;
-	enum KEYS { UP, DOWN, LEFT, RIGHT };
+	int spawnedEnemies = 6;
+	enum KEYS { UP, DOWN, LEFT, RIGHT, SPACE };
 
 	bool exit = false;
 	bool render = false;
 	Sprite player;
+	Sprite enemies[10];
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
@@ -48,7 +49,19 @@ int main() {
 	ALLEGRO_FONT *font = al_load_font("PressStart2P.ttf", 48, 0);
 	ALLEGRO_FONT *smallFont = al_load_font("PressStart2P.ttf", 16, 0);
 
-	player.InitSprites();
+	player.InitSprites((char *)"Player.png", 32, 240);
+	
+	enemies[0].InitSprites((char *)"Enemy.png", 352, 240);
+	enemies[1].InitSprites((char *)"Enemy.png", 608, 240);
+	enemies[2].InitSprites((char *)"Enemy.png", 832, 240);
+	enemies[3].InitSprites((char *)"Enemy.png", 992, 240);
+	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240);
+	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240);
+	enemies[6].InitSprites((char *)"Enemy.png", 0, 0);
+	enemies[7].InitSprites((char *)"Enemy.png", 0, 0);
+	enemies[8].InitSprites((char *)"Enemy.png", 0, 0);
+	enemies[9].InitSprites((char *)"Enemy.png", 0, 0);
+
 
 	int xOff = 0;
 	int yOff = 0;
@@ -75,6 +88,9 @@ int main() {
 	//draw foreground tiles
 	MapDrawFG(xOff, yOff, 0, 0, WIDTH - 1, HEIGHT - 1, 0);
 	player.DrawSprites(0, 0);
+	for (int i = 0; i < 10; i++) {
+		enemies[i].DrawSprites(0, 0);
+	}
 
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -86,23 +102,30 @@ int main() {
 
 		if (event.type == ALLEGRO_EVENT_TIMER) {
 			render = true;
-			if (keys[UP]) {
-				exited = player.UpdateSprites(UP, mapwidth * 32, mapheight * 32);
+			if (keys[SPACE]) {
+				player.UpdateSprites(SPACE, mapwidth * 32, mapheight * 32);
+			}
+			else if (keys[UP]) {
+				player.UpdateSprites(UP, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[DOWN]) {
-				exited = player.UpdateSprites(DOWN, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(DOWN, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[LEFT]) {
-				exited = player.UpdateSprites(LEFT, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(LEFT, mapwidth * 32, mapheight * 32);
 			}
 			else if (keys[RIGHT]) {
-				exited = player.UpdateSprites(RIGHT, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(RIGHT, mapwidth * 32, mapheight * 32);
 			}
 			else {
-				exited = player.UpdateSprites(-1, mapwidth * 32, mapheight * 32);
+				player.UpdateSprites(-1, mapwidth * 32, mapheight * 32);
 			}
 
 			special = player.CollisionSpecial();
+
+			for (int i = 0; i < spawnedEnemies; i++) {
+				enemies[i].UpdateSprites(-1, mapwidth * 32, mapheight * 32);
+			}
 		}
 
 		else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
@@ -127,6 +150,9 @@ int main() {
 			case ALLEGRO_KEY_RIGHT:
 				keys[RIGHT] = true;
 				break;
+			case ALLEGRO_KEY_SPACE:
+				keys[SPACE] = true;
+				break;
 			}
 		}
 		else if (event.type == ALLEGRO_EVENT_KEY_UP) {
@@ -145,6 +171,9 @@ int main() {
 				break;
 			case ALLEGRO_KEY_RIGHT:
 				keys[RIGHT] = false;
+				break;
+			case ALLEGRO_KEY_SPACE:
+				keys[SPACE] = false;
 				break;
 			}
 		}
@@ -174,6 +203,9 @@ int main() {
 			MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
 			MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
 			player.DrawSprites(xOff, yOff);
+			for (int i = 0; i < spawnedEnemies; i++) {
+				enemies[i].DrawSprites(xOff, yOff);
+			}
 
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0, 0, 0));

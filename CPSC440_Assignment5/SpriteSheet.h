@@ -12,8 +12,8 @@ class Sprite {
 	public:
 		Sprite();
 		~Sprite();
-		void InitSprites();
-		bool UpdateSprites(int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT
+		void InitSprites(char file[16], int x, int y);
+		void UpdateSprites(int dir, int width, int height); //dir 0 = UP, 1 = DOWN, 2 = LEFT, 3 = RIGHT, 4 = firing
 		int CollisionSpecial();
 		void DrawSprites(int xoffset, int yoffset);
 		float getX() { return x; }
@@ -22,6 +22,8 @@ class Sprite {
 		void setY(int inY) { y = inY; }
 		int getWidth() { return frameWidth; }
 		int getHeight() { return frameHeight; }
+		int getLives() { return lives; }
+		void setLives(int value) { lives = value; }
 
 	private:
 		float x;
@@ -35,6 +37,8 @@ class Sprite {
 		int animationColumns;
 		int direction;
 		int speed;
+		bool firing;
+		int lives;
 
 		ALLEGRO_BITMAP *image;
 };
