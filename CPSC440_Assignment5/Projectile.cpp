@@ -10,6 +10,7 @@ Projectile::Projectile() {
 	live = false;
 	frameWidth = 8;
 	frameHeight = 8;
+	angle = 0;
 
 	image = al_create_bitmap(frameWidth, frameHeight);
 	if (!image) {
@@ -42,7 +43,7 @@ void Projectile::initProjectile(bool enemy) {
 
 void Projectile::DrawProjectile(int xoffset, int yoffset) {
 	if (live) {
-		al_draw_bitmap(image, x - xoffset, y - yoffset, 0);
+		al_draw_rotated_bitmap(image, 4, 4, x - xoffset, y - yoffset, (angle * 2 * ALLEGRO_PI) / 128, 0);
 	}
 }
 
@@ -64,11 +65,18 @@ void Projectile::FireProjectile(int x, int y, int direction) {
 void Projectile::UpdateProjectile(int width, int height) {
 	
 	if (live) {
+		//Travel
 		if (direction == 0) {
 			x -= speed;
 		}
 		else {
 			x += speed;
+		}
+
+		//Angle
+		angle++;
+		if (angle >= 128) {
+			angle = 0;
 		}
 
 		//Map collision
