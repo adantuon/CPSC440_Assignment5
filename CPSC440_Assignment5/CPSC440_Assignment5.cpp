@@ -32,6 +32,8 @@ int main() {
 	const int numPlayerProjectiles = 10;
 	const int numEnemyProjectiles = 40;
 	ALLEGRO_SAMPLE *background = NULL;
+	ALLEGRO_SAMPLE *door = NULL;
+	ALLEGRO_SAMPLE_ID *doorOpens = NULL;
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
@@ -100,8 +102,9 @@ int main() {
 	}
 
 	//Sounds
-	al_reserve_samples(1);
+	al_reserve_samples(10);						//This needs to be higher than num imported sounds since same sound can sometimes play at same time
 	background = al_load_sample("background.wav");
+	door = al_load_sample("door.wav");
 	
 	//create eventQueue and Timer
 	eventQueue = al_create_event_queue();
@@ -221,9 +224,11 @@ int main() {
 		}
 
 		if (special != 0) {
+			//Player Opens Castle Gate
 			if (special == 1) {
 				MapChangeLayer(1);
 			}
+			//Player Changes Level
 			else if (special == 2) {
 				//change map
 				MapChangeLayer(2);

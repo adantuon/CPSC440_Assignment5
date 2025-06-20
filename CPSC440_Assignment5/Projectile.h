@@ -24,6 +24,8 @@ private:
 	int speed;
 	int direction;
 	float angle;
+	bool enemy;
 
 	ALLEGRO_BITMAP *image;
+	ALLEGRO_SAMPLE *fire;
 };

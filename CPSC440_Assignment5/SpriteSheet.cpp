@@ -1,5 +1,7 @@
 //Aiden D'Antuono
 
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "SpriteSheet.h"
 #include <stdio.h>
 
@@ -14,10 +16,12 @@ Sprite::~Sprite() {
 void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectilesP, int numProjectilesP, Projectile *projectilesE, int numProjectilesE) {
 	//If player
 	if (player) {
+		sample = al_load_sample("playerhit.wav");
 		lives = 5;
 	}
 	//If enemy
 	else {
+		sample = al_load_sample("skeletondeath.wav");
 		lives = 1;
 	}
 
@@ -196,6 +200,7 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 	for (int i = 0; i < numProjectilesE; i++) {
 		if (projectilesE[i].getLive()) {
 			if (x + frameWidth >= projectilesE[i].getX() && x <= projectilesE[i].getX() + 8 && y + frameHeight >= projectilesE[i].getY() && y <= projectilesE[i].getY() + 8) {
+				al_play_sample(sample, 0.66, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				projectilesE[i].setLive(false);
 				lives--;
 			}
@@ -313,6 +318,7 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 	for (int i = 0; i < numProjectilesP; i++) {
 		if (projectilesP[i].getLive()) {
 			if (x + frameWidth >= projectilesP[i].getX() && x <= projectilesP[i].getX() + 8 && y + frameHeight >= projectilesP[i].getY() && y <= projectilesP[i].getY() + 8) {
+				al_play_sample(sample, 1.0, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 				projectilesP[i].setLive(false);
 				lives--;
 			}

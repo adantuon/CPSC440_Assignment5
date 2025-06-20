@@ -48,4 +48,5 @@ class Sprite {
 		int numProjectilesE;
 
 		ALLEGRO_BITMAP *image;
+		ALLEGRO_SAMPLE *sample;
 };

@@ -2,6 +2,8 @@
 
 #include <allegro5/allegro_primitives.h>
 #include <allegro5\allegro_image.h>
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "Projectile.h"
 #include <stdio.h>
 
@@ -16,6 +18,8 @@ Projectile::Projectile() {
 	if (!image) {
 		exit(1);
 	}
+
+	fire = al_load_sample("spell.wav");
 }
 
 Projectile::~Projectile() {
@@ -23,6 +27,8 @@ Projectile::~Projectile() {
 }
 
 void Projectile::initProjectile(bool enemy) {
+	Projectile::enemy = enemy;
+
 	ALLEGRO_COLOR color, colorAlt;
 
 	if (!enemy) {
@@ -49,6 +55,15 @@ void Projectile::DrawProjectile(int xoffset, int yoffset) {
 
 void Projectile::FireProjectile(int x, int y, int direction) {
 	live = true;
+
+	if (enemy) {
+		al_play_sample(fire, .05, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	}
+	else {
+		al_play_sample(fire, 0.25, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
+	}
+	
+
 	Projectile::direction = direction;
 	if (direction == 0) {
 		
