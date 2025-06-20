@@ -260,11 +260,11 @@ int main() {
 			MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
 			MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
 
-			player.DrawSprites(xOff, yOff);
-
 			for (int i = 0; i < spawnedEnemies; i++) {
 				enemies[i].DrawSprites(xOff, yOff);
 			}
+
+			player.DrawSprites(xOff, yOff);
 
 			for (int i = 0; i < numPlayerProjectiles; i++) {
 				playerProjectiles[i].DrawProjectile(xOff, yOff);

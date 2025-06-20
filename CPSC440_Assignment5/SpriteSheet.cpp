@@ -14,7 +14,7 @@ Sprite::~Sprite() {
 void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectilesP, int numProjectilesP, Projectile *projectilesE, int numProjectilesE) {
 	//If player
 	if (player) {
-		lives = 3;
+		lives = 5;
 	}
 	//If enemy
 	else {
@@ -176,17 +176,20 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 	}
 
 	//Collision Detection
-	if (collided(x + 6, y) || collided(x + frameWidth - 6, y + frameHeight) || collided(x + frameWidth - 6, y) || collided (x + 6, y + frameHeight)) {
+	if (collided(x + 6, y + 2) || collided(x + frameWidth - 6, y + frameHeight - 4) || collided(x + frameWidth - 6, y + 2) || collided (x + 6, y + frameHeight - 4)) {
 		x = oldx;
 		y = oldy;
 	}
 
 	//enemy collision
 	for (int i = 0; i < numEnemies; i++) {
-		if (x + frameWidth >= enemies[i].getX() && x <= enemies[i].getX() + frameWidth && y + frameHeight >= enemies[i].getY() && y <= enemies[i].getY() + frameHeight) {
-			x = oldx;
-			y = oldy;
+		if (enemies[i].getLives() > 0) {
+			if (x + frameWidth >= enemies[i].getX() && x <= enemies[i].getX() + frameWidth && y + frameHeight >= enemies[i].getY() && y <= enemies[i].getY() + frameHeight) {
+				x = oldx;
+				y = oldy;
+			}
 		}
+		
 	}
 
 	//Projectile collision
@@ -298,10 +301,13 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 	}
 
 	//player collision
-	if (x + frameWidth >= player.getX() && x <= player.getX() + frameWidth && y + frameHeight >= player.getY() && y <= player.getY() + frameHeight) {
-		x = oldx;
-		y = oldy;
+	if (player.getLives() > 0) {
+		if (x + frameWidth >= player.getX() && x <= player.getX() + frameWidth && y + frameHeight >= player.getY() && y <= player.getY() + frameHeight) {
+			x = oldx;
+			y = oldy;
+		}
 	}
+	
 
 	//Projectile Collision
 	for (int i = 0; i < numProjectilesP; i++) {

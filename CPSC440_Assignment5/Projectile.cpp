@@ -48,7 +48,6 @@ void Projectile::DrawProjectile(int xoffset, int yoffset) {
 }
 
 void Projectile::FireProjectile(int x, int y, int direction) {
-	printf("firing\n");
 	live = true;
 	Projectile::direction = direction;
 	if (direction == 0) {
