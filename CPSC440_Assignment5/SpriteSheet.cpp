@@ -11,7 +11,7 @@ Sprite::~Sprite() {
 	al_destroy_bitmap(image);
 }
 
-void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectiles, int numProjectiles) {
+void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectilesP, int numProjectilesP, Projectile *projectilesE, int numProjectilesE) {
 	//If player
 	if (player) {
 		lives = 3;
@@ -34,8 +34,10 @@ void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *p
 	speed = 2;
 	firing = false;
 	directionAI = rand() % 2;
-	Sprite::projectiles = projectiles;
-	Sprite::numProjectiles = numProjectiles;
+	Sprite::projectilesP = projectilesP;
+	Sprite::numProjectilesP = numProjectilesP;
+	Sprite::projectilesE = projectilesE;
+	Sprite::numProjectilesE = numProjectilesE;
 
 	image = al_load_bitmap(file);
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
@@ -69,9 +71,9 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 		}
 		
 		if (curFrame == 36 && frameCount == 0) {
-			for (int i = 0; i < numProjectiles; i++) {
-				if (!projectiles[i].getLive()) {
-					projectiles[i].FireProjectile(x, y, direction);
+			for (int i = 0; i < numProjectilesP; i++) {
+				if (!projectilesP[i].getLive()) {
+					projectilesP[i].FireProjectile(x, y, direction);
 					break;
 				}
 			}
@@ -186,6 +188,16 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 			y = oldy;
 		}
 	}
+
+	//Projectile collision
+	for (int i = 0; i < numProjectilesE; i++) {
+		if (projectilesE[i].getLive()) {
+			if (x + frameWidth >= projectilesE[i].getX() && x <= projectilesE[i].getX() + 8 && y + frameHeight >= projectilesE[i].getY() && y <= projectilesE[i].getY() + 8) {
+				projectilesE[i].setLive(false);
+				lives--;
+			}
+		}
+	}
 }
 
 void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
@@ -223,9 +235,9 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 		}
 
 		if (curFrame == 38 && frameCount == 0) {
-			for (int i = 0; i < numProjectiles; i++) {
-				if (!projectiles[i].getLive()) {
-					projectiles[i].FireProjectile(x, y, direction);
+			for (int i = 0; i < numProjectilesE; i++) {
+				if (!projectilesE[i].getLive()) {
+					projectilesE[i].FireProjectile(x, y, direction);
 					break;
 				}
 			}
@@ -289,6 +301,16 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 	if (x + frameWidth >= player.getX() && x <= player.getX() + frameWidth && y + frameHeight >= player.getY() && y <= player.getY() + frameHeight) {
 		x = oldx;
 		y = oldy;
+	}
+
+	//Projectile Collision
+	for (int i = 0; i < numProjectilesP; i++) {
+		if (projectilesP[i].getLive()) {
+			if (x + frameWidth >= projectilesP[i].getX() && x <= projectilesP[i].getX() + 8 && y + frameHeight >= projectilesP[i].getY() && y <= projectilesP[i].getY() + 8) {
+				projectilesP[i].setLive(false);
+				lives--;
+			}
+		}
 	}
 
 }

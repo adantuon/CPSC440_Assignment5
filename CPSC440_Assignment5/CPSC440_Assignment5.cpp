@@ -54,18 +54,18 @@ int main() {
 	Projectile playerProjectiles[numPlayerProjectiles];
 	Projectile enemyProjectiles[numEnemyProjectiles];
 
-	player.InitSprites((char *)"Player.png", 32, 240, true, playerProjectiles, numPlayerProjectiles);
+	player.InitSprites((char *)"Player.png", 32, 240, true, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
 	
-	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
-	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false, enemyProjectiles, numEnemyProjectiles);
+	enemies[0].InitSprites((char *)"Enemy.png", 352, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[1].InitSprites((char *)"Enemy.png", 608, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[2].InitSprites((char *)"Enemy.png", 832, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[3].InitSprites((char *)"Enemy.png", 992, 112, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[4].InitSprites((char *)"Enemy.png", 1184, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[5].InitSprites((char *)"Enemy.png", 1400, 240, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[6].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[7].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[8].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
+	enemies[9].InitSprites((char *)"Enemy.png", 0, 0, false, playerProjectiles, numPlayerProjectiles, enemyProjectiles, numEnemyProjectiles);
 
 
 	for (int i = 0; i < 10; i++) {

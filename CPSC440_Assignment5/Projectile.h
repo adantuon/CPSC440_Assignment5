@@ -12,6 +12,9 @@ public:
 	void FireProjectile(int x, int y, int direction);
 	void UpdateProjectile(int width, int height);
 	bool getLive() { return live; }
+	void setLive(bool l) { live = l; }
+	int getX() { return x; }
+	int getY() { return y; }
 private:
 	int x;
 	int y;
