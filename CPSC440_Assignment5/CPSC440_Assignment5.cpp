@@ -40,7 +40,6 @@ int main() {
 	
 	ALLEGRO_SAMPLE *background = NULL;
 	ALLEGRO_SAMPLE *door = NULL;
-	ALLEGRO_SAMPLE_ID *doorOpens = NULL;
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
@@ -269,6 +268,7 @@ int main() {
 
 				spawnedEnemies = 10;
 
+				//Set enemy positions
 				enemies[0].setX(800);
 				enemies[0].setY(32);
 				enemies[1].setX(832);
@@ -298,7 +298,8 @@ int main() {
 
 		if (render && al_is_event_queue_empty(eventQueue)) {
 			render = false;
-
+			
+			//If Died game continues for few seconds then shows game over screen
 			if (end == 1 && frames - endframe > 120) {
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 150, ALLEGRO_ALIGN_CENTER, "Game Over");
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 100, ALLEGRO_ALIGN_CENTER, "You have died and");
@@ -310,6 +311,8 @@ int main() {
 					exit = true;
 				}
 			}
+
+			//If won game continues for a few seconds then shows game over screen
 			else if (end == 2 && frames - endframe > 120) {
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 150, ALLEGRO_ALIGN_CENTER, "Game Over");
 				al_draw_textf(font, al_map_rgb(255, 255, 255), WIDTH / 2, HEIGHT / 2 - 100, ALLEGRO_ALIGN_CENTER, "You destroyed the crystal");
@@ -322,6 +325,8 @@ int main() {
 					exit = true;
 				}
 			}
+
+			//Game is still ongoing
 			else {
 				xOff = player.getX() + player.getWidth() - WIDTH / 2;
 				yOff = player.getY() + player.getHeight() - HEIGHT / 2;
@@ -336,19 +341,24 @@ int main() {
 				if (yOff > (mapheight * mapblockheight - HEIGHT))
 					yOff = mapheight * mapblockheight - HEIGHT;
 
+				//Draw map
 				MapDrawBG(xOff, yOff, 0, 0, WIDTH, HEIGHT);
 				MapDrawFG(xOff, yOff, 0, 0, WIDTH, HEIGHT, 0);
 
+				//Draw Enemies
 				for (int i = 0; i < spawnedEnemies; i++) {
 					enemies[i].DrawSprites(xOff, yOff);
 				}
 
+				//Draw crystal if on right map
 				if (crystalSpawned) {
 					crystal.DrawCrystal(xOff, yOff);
 				}
 
+				//Draw Player
 				player.DrawSprites(xOff, yOff);
 
+				//Draw Projectiles
 				for (int i = 0; i < numPlayerProjectiles; i++) {
 					playerProjectiles[i].DrawProjectile(xOff, yOff);
 				}
@@ -357,6 +367,7 @@ int main() {
 					enemyProjectiles[i].DrawProjectile(xOff, yOff);
 				}
 
+				//Draw player health
 				al_draw_textf(font, al_map_rgb(255, 255, 255), 8, 4, ALLEGRO_ALIGN_LEFT, "Health: ");
 				drawStatus(player.getLives(), heart);
 			}
@@ -373,25 +384,29 @@ int main() {
 	MapFreeMem();
 	al_destroy_event_queue(eventQueue);
 	al_destroy_display(display);
+	al_destroy_sample(background);
+	al_destroy_sample(door);
 
 	return 0;
 }
 
+//Take in an x and y and see if that collides with a tile
 int collided(int x, int y) {
 	BLKSTR *blockdata;
 	blockdata = MapGetBlock(x / mapblockwidth, y / mapblockheight);
 	return blockdata->tl;
 }
 
+//see if an x and y collide with a special tile
 int specialValue(int x, int y)
 {
-
 	BLKSTR *data;
 	data = MapGetBlock(x / mapblockwidth, y / mapblockheight);
 
 	return data->user1;
 }
 
+//Draw hearts remaining for player
 void drawStatus(int lives, ALLEGRO_BITMAP *heart) {
 
 	for (int i = 0; i < lives; i++) {

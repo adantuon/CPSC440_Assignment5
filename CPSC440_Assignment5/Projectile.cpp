@@ -24,8 +24,10 @@ Projectile::Projectile() {
 
 Projectile::~Projectile() {
 	al_destroy_bitmap(image);
+	al_destroy_sample(fire);
 }
 
+//initialize projectile based on whether it is an enemy's or not
 void Projectile::initProjectile(bool enemy) {
 	Projectile::enemy = enemy;
 
@@ -47,15 +49,18 @@ void Projectile::initProjectile(bool enemy) {
 	al_draw_filled_rectangle(2, 2, 6, 6, colorAlt);
 }
 
+//draw the projectile
 void Projectile::DrawProjectile(int xoffset, int yoffset) {
 	if (live) {
 		al_draw_rotated_bitmap(image, 4, 4, x - xoffset, y - yoffset, (angle * 2 * ALLEGRO_PI) / 128, 0);
 	}
 }
 
+//Fire projectile from sprite x, y, and direction
 void Projectile::FireProjectile(int x, int y, int direction) {
 	live = true;
 
+	//Play sound at different volumes for player and enemy
 	if (enemy) {
 		al_play_sample(fire, .05, 0.0, 1.0, ALLEGRO_PLAYMODE_ONCE, NULL);
 	}
@@ -76,6 +81,7 @@ void Projectile::FireProjectile(int x, int y, int direction) {
 	}
 }
 
+//Update projectile location and whether hit tile or map edge
 void Projectile::UpdateProjectile(int width, int height) {
 	
 	if (live) {

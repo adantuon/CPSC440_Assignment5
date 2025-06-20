@@ -11,6 +11,7 @@ Sprite::Sprite() {
 
 Sprite::~Sprite() {
 	al_destroy_bitmap(image);
+	al_destroy_sample(sample);
 }
 
 void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *projectilesP, int numProjectilesP, Projectile *projectilesE, int numProjectilesE, Crystal *crystal) {
@@ -49,6 +50,7 @@ void Sprite::InitSprites(char file[16], int x, int y, bool player, Projectile *p
 	image = al_load_bitmap(file);
 }
 
+//Updates player sprites
 void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, int height) {
 
 	int oldx = x;
@@ -187,7 +189,7 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 		y = oldy;
 	}
 
-	//enemy collision
+	//Enemy collision
 	for (int i = 0; i < numEnemies; i++) {
 		if (enemies[i].getLives() > 0) {
 			if (x + frameWidth >= enemies[i].getX() && x <= enemies[i].getX() + frameWidth && y + frameHeight >= enemies[i].getY() && y <= enemies[i].getY() + frameHeight) {
@@ -219,6 +221,7 @@ void Sprite::UpdateSprites(Sprite *enemies, int numEnemies, int dir, int width, 
 	}
 }
 
+//Updates enemy sprites
 void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 
 	int oldx = x;
@@ -339,11 +342,13 @@ void Sprite::UpdateSpritesAI(Sprite &player, int width, int height) {
 	}
 }
 
+//check if sprite is colliding with a special tile
 int Sprite::CollisionSpecial()
 {
 	return specialValue(x + 16, y + 16);
 }
 
+//Draw a sprite
 void Sprite::DrawSprites(int xoffset, int yoffset) {
 	int fx = (curFrame % animationColumns) * frameWidth;
 	int fy = (curFrame / animationColumns) * frameHeight;

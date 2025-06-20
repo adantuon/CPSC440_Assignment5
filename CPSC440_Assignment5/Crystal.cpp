@@ -12,6 +12,7 @@ Crystal::Crystal() {
 
 Crystal::~Crystal() {
 	al_destroy_bitmap(image);
+	al_destroy_sample(sample);
 }
 
 void Crystal::InitCrystal(char file[16], int x, int y, Projectile *projectiles, int numProjectiles) {
@@ -34,6 +35,7 @@ void Crystal::InitCrystal(char file[16], int x, int y, Projectile *projectiles, 
 	image = al_load_bitmap(file);
 }
 
+//Update sprite based on health and whether player hits it
 void Crystal::UpdateCrystal() {
 
 	if (curFrame > maxFrame) {
@@ -55,6 +57,7 @@ void Crystal::UpdateCrystal() {
 	}
 }
 
+//Draw crystal
 void Crystal::DrawCrystal(int xoffset, int yoffset) {
 	int fx = (curFrame % animationColumns) * frameWidth;
 	int fy = (curFrame / animationColumns) * frameHeight;
