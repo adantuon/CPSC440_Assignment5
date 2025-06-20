@@ -31,6 +31,7 @@ int main() {
 	Sprite enemies[10];
 	const int numPlayerProjectiles = 10;
 	const int numEnemyProjectiles = 40;
+	ALLEGRO_SAMPLE *background = NULL;
 
 	ALLEGRO_DISPLAY *display = NULL;
 	ALLEGRO_EVENT_QUEUE *eventQueue = NULL;
@@ -53,7 +54,8 @@ int main() {
 	al_init_primitives_addon();
 	al_init_font_addon();
 	al_init_ttf_addon();
-
+	al_install_audio();
+	al_init_acodec_addon();
 
 	//Font init
 	ALLEGRO_FONT *font = al_load_font("Early GameBoy.ttf", 16, 0);
@@ -96,6 +98,10 @@ int main() {
 	if (MapLoad(mapName, 1)) {
 		return -5;
 	}
+
+	//Sounds
+	al_reserve_samples(1);
+	background = al_load_sample("background.wav");
 	
 	//create eventQueue and Timer
 	eventQueue = al_create_event_queue();
@@ -122,6 +128,7 @@ int main() {
 	al_flip_display();
 	al_clear_to_color(al_map_rgb(0, 0, 0));
 
+	al_play_sample(background, 0.15, 0.0, 1.0, ALLEGRO_PLAYMODE_LOOP, NULL);
 	while (!exit) {
 
 		ALLEGRO_EVENT event;
